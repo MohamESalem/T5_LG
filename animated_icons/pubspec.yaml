@@ -1,0 +1,27 @@
+name: animated_icons
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  animated_icon: ^0.0.9
+  flutter:
+    sdk: flutter
+  rive: ^0.13.20
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  animations: ^2.0.0
+  flutter_animate: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+assets:
+    - assets/icons.riv
+    - assets/setting_icon.riv
