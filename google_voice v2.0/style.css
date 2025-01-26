@@ -1,0 +1,207 @@
+:root {
+    --color-google-blue: #4285f4;
+    --color-google-red: #ea4335;
+    --color-google-yellow: #fbbc05;
+    --color-google-green: #34a853;
+    --grad-blue-red: 25%;
+    --grad-red-blue: 25%;
+    --grad-red-yellow: 50%;
+    --grad-yellow-red: 50%;
+    --grad-yellow-green: 75%;
+    --grad-green-yellow: 75%;
+}
+
+@property --grad-blue-red {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 25%;
+}
+
+@property --grad-red-blue {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 25%;
+}
+
+@property --grad-red-yellow {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 50%;
+}
+
+@property --grad-yellow-red {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 50%;
+}
+
+@property --grad-yellow-green {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 75%;
+}
+
+@property --grad-green-yellow {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 75%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #101418;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.footer {
+    width: 100%;
+    height: 0;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #ffffff;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: expandFooter 1.5s forwards;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.4s;
+}
+
+.footer .colorful-line {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(
+        to right,
+        var(--color-google-blue) 0 var(--grad-blue-red),
+        var(--color-google-red) var(--grad-red-blue) var(--grad-red-yellow),
+        var(--color-google-yellow) var(--grad-yellow-red) var(--grad-yellow-green),
+        var(--color-google-green) var(--grad-green-yellow) 100%
+    );
+    transition: --grad-blue-red 0.5s, --grad-red-blue 0.5s, --grad-red-yellow 0.5s, --grad-yellow-red 0.5s, --grad-yellow-green 0.5s, --grad-green-yellow 0.5s;
+    animation: voice 2s ease infinite alternate;
+    box-shadow: 0 0 20px var(--color-google-blue), 0 0 30px var(--color-google-red), 0 0 40px var(--color-google-yellow), 0 0 50px var(--color-google-green);
+}
+
+.footer p {
+    position: static;
+    margin-right: 20px;
+    padding: 20px;
+    color: #333;
+    font-size: 2em;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+    opacity: 0;
+    transition: opacity 0.3s, color 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+    direction: ltr;
+}
+
+@keyframes expandFooter {
+    from {
+        height: 0;
+    }
+    to {
+        height: 200px;
+    }
+}
+
+@keyframes voice {
+    0% {
+        --grad-blue-red: 80%;
+        --grad-red-blue: 84%;
+        --grad-red-yellow: 88%;
+        --grad-yellow-red: 92%;
+        --grad-yellow-green: 96%;
+        --grad-green-yellow: 100%;
+    }
+    15% {
+        --grad-blue-red: 10%;
+        --grad-red-blue: 14%;
+        --grad-red-yellow: 70%;
+        --grad-yellow-red: 74%;
+        --grad-yellow-green: 96%;
+        --grad-green-yellow: 100%;
+    }
+    30% {
+        --grad-blue-red: 10%;
+        --grad-red-blue: 14%;
+        --grad-red-yellow: 80%;
+        --grad-yellow-red: 84%;
+        --grad-yellow-green: 90%;
+        --grad-green-yellow: 100%;
+    }
+    45% {
+        --grad-blue-red: 10%;
+        --grad-red-blue: 14%;
+        --grad-red-yellow: 60%;
+        --grad-yellow-red: 66%;
+        --grad-yellow-green: 76%;
+        --grad-green-yellow: 80%;
+    }
+    60% {
+        --grad-blue-red: 0%;
+        --grad-red-blue: 5%;
+        --grad-red-yellow: 10%;
+        --grad-yellow-red: 15%;
+        --grad-yellow-green: 90%;
+        --grad-green-yellow: 100%;
+    }
+    75% {
+        --grad-blue-red: 0%;
+        --grad-red-blue: 5%;
+        --grad-red-yellow: 10%;
+        --grad-yellow-red: 15%;
+        --grad-yellow-green: 20%;
+        --grad-green-yellow: 40%;
+    }
+    100% {
+        --grad-blue-red: 80%;
+        --grad-red-blue: 84%;
+        --grad-red-yellow: 88%;
+        --grad-yellow-red: 92%;
+        --grad-yellow-green: 96%;
+        --grad-green-yellow: 100%;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #333;
+        color: #fff;
+    }
+    .footer {
+        background-color: #131313;
+    }
+    .footer p {
+        color: #f4efef;
+    }
+}
+
+.icon-container {
+    position: absolute;
+    bottom: 10px;
+    left: calc(100% - 55px);
+}
+.icon-container button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.icon-container i {
+    font-size: 24px;
+    color: white;
+}
+.icon-container button:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
+}

@@ -29,7 +29,7 @@ class _HoverAnimationStackState extends State<HoverAnimationStack>
   late AnimationController _rotationController;
   late AnimationController _sizeController;
   late AnimationController _starRotationController;
-  ShapeBorder currentShape = CircleBorder(); 
+  ShapeBorder currentShape = CircleBorder();
   late Timer _timer;
   int _shapeIndex = 0;
 
@@ -128,7 +128,7 @@ class RotatingStar extends StatelessWidget {
   Widget build(BuildContext context) {
     final _animation = CurvedAnimation(
       parent: controller,
-      curve: Curves.easeInOut,
+      curve: Curves.linearToEaseOut,
     );
 
     final _colorAnimation = ColorTween(

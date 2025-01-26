@@ -11,18 +11,26 @@ class Timeline extends StatefulWidget {
 }
 
 class _TimelineState extends State<Timeline> {
-  bool isThirdCompleted = false;
-  bool isFourthInProgress = false;
+  List<bool> isCompleted = [false, false, false, false, false, false];
+  List<bool> isInProgress = [false, false, false, false, false, false];
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 2), () {
+    _startAnimations();
+  }
+
+  void _startAnimations() async {
+    for (int i = 0; i < isCompleted.length; i++) {
       setState(() {
-        isThirdCompleted = true;
-        isFourthInProgress = true;
+        isInProgress[i] = true;
       });
-    });
+      await Future.delayed(Duration(seconds: 2));
+      setState(() {
+        isInProgress[i] = false;
+        isCompleted[i] = true;
+      });
+    }
   }
 
   @override
@@ -34,32 +42,36 @@ class _TimelineState extends State<Timeline> {
           children: [
             _buildTimelineTile(
                 isFirst: true,
-                isPast: true,
+                isPast: isCompleted[0],
+                isInProgress: isInProgress[0],
                 text: 'Selected Movie',
                 icon: Icons.movie),
             _buildTimelineTile(
-                isPast: true, text: 'Chosen Seats', icon: Icons.event_seat),
+                isPast: isCompleted[1],
+                isInProgress: isInProgress[1],
+                text: 'Chosen Seats',
+                icon: Icons.event_seat),
             _buildTimelineTile(
-                isPast: isThirdCompleted,
+                isPast: isCompleted[2],
+                isInProgress: isInProgress[2],
                 text: 'Added Snacks',
-                icon: Icons.fastfood,
-                inProgressColor: Colors.orange,
-                wasInProgress: !isThirdCompleted && isFourthInProgress),
+                icon: Icons.fastfood),
             _buildTimelineTile(
+                isPast: isCompleted[3],
+                isInProgress: isInProgress[3],
                 text: 'Payment',
-                icon: Icons.payment,
-                inProgressColor: Colors.orange,
-                notStarted: !isFourthInProgress),
+                icon: Icons.payment),
             _buildTimelineTile(
+                isPast: isCompleted[4],
+                isInProgress: isInProgress[4],
                 text: 'Review Order',
-                icon: Icons.receipt,
-                inProgressColor: Colors.orange,
-                notStarted: true),
+                icon: Icons.receipt),
             _buildTimelineTile(
                 isLast: true,
+                isPast: isCompleted[5],
+                isInProgress: isInProgress[5],
                 text: 'Booking Confirmed',
-                icon: Icons.check_circle,
-                notStarted: true),
+                icon: Icons.check_circle),
           ],
         ),
       ),
@@ -70,41 +82,34 @@ class _TimelineState extends State<Timeline> {
     bool isFirst = false,
     bool isLast = false,
     bool isPast = false,
-    bool notStarted = false,
+    bool isInProgress = false,
     required String text,
     required IconData icon,
-    Color? inProgressColor,
-    bool wasInProgress = false,
   }) {
     return CustomTimelineTile(
       isFirst: isFirst,
       isLast: isLast,
       isPast: isPast,
+      isInProgress: isInProgress,
       text: text,
       icon: icon,
-      notStarted: notStarted,
-      inProgressColor: inProgressColor,
-      wasInProgress: wasInProgress,
     );
   }
 }
 
 class CustomTimelineTile extends StatefulWidget {
-  final bool isFirst, isLast, isPast, notStarted, wasInProgress;
+  final bool isFirst, isLast, isPast, isInProgress;
   final String text;
   final IconData icon;
-  final Color? inProgressColor;
 
   const CustomTimelineTile({
     super.key,
     required this.isFirst,
     required this.isLast,
     required this.isPast,
+    required this.isInProgress,
     required this.text,
     required this.icon,
-    this.notStarted = false,
-    this.inProgressColor,
-    this.wasInProgress = false,
   });
 
   @override
@@ -135,7 +140,7 @@ class _CustomTimelineTileState extends State<CustomTimelineTile>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (!widget.isPast && !widget.notStarted) {
+        if (!widget.isPast && !widget.isInProgress) {
           setState(() {
             _controller.forward(from: 0.0);
           });
@@ -149,30 +154,25 @@ class _CustomTimelineTileState extends State<CustomTimelineTile>
           beforeLineStyle: LineStyle(
             color: widget.isPast
                 ? Colors.green
-                : (widget.notStarted
-                    ? Colors.red
-                    : widget.inProgressColor ?? Colors.orange),
+                : (widget.isInProgress ? Colors.orange : Colors.red),
           ),
           indicatorStyle: IndicatorStyle(
             width: 40,
             color: widget.isPast
                 ? Colors.green
-                : (widget.notStarted
-                    ? Colors.red
-                    : widget.inProgressColor ?? Colors.orange),
+                : (widget.isInProgress ? Colors.orange : Colors.red),
             iconStyle: IconStyle(
               iconData: widget.isPast
                   ? widget.icon
-                  : (widget.notStarted ? Icons.not_started : Icons.autorenew),
+                  : (widget.isInProgress ? Icons.autorenew : Icons.not_started),
               color: Colors.white,
             ),
           ),
           endChild: EventCard(
             text: widget.text,
             isPast: widget.isPast,
-            notStarted: widget.notStarted,
+            isInProgress: widget.isInProgress,
             animation: _animation,
-            wasInProgress: widget.wasInProgress,
           ),
         ),
       ),
@@ -182,16 +182,15 @@ class _CustomTimelineTileState extends State<CustomTimelineTile>
 
 class EventCard extends StatelessWidget {
   final String text;
-  final bool isPast, notStarted, wasInProgress;
+  final bool isPast, isInProgress;
   final Animation<double> animation;
 
   const EventCard({
     super.key,
     required this.text,
     required this.isPast,
-    this.notStarted = false,
+    required this.isInProgress,
     required this.animation,
-    this.wasInProgress = false,
   });
 
   @override
@@ -205,12 +204,12 @@ class EventCard extends StatelessWidget {
             transitionBuilder: (Widget child, Animation<double> animation) {
               return ScaleTransition(child: child, scale: animation);
             },
-            child: isPast || notStarted
+            child: isPast || !isInProgress
                 ? Icon(isPast ? Icons.check_circle : Icons.not_started,
                     key: ValueKey<bool>(isPast),
                     color: isPast
                         ? Colors.green
-                        : (notStarted ? Colors.red : Colors.orange))
+                        : (isInProgress ? Colors.orange : Colors.red))
                 : RotationTransition(
                     turns: animation,
                     child: Icon(Icons.autorenew,
@@ -224,27 +223,17 @@ class EventCard extends StatelessWidget {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               SizedBox(height: 5),
               AnimatedOpacity(
-                opacity: isPast ? 1.0 : (notStarted ? 0.5 : 1.0),
+                opacity: isPast ? 1.0 : (isInProgress ? 1.0 : 0.5),
                 duration: Duration(seconds: 1),
                 child: Text(
                     isPast
                         ? 'Completed'
-                        : (notStarted ? 'Not Started' : 'In Progress'),
+                        : (isInProgress ? 'In Progress' : 'Not Started'),
                     style: TextStyle(
                         color: isPast
                             ? Colors.green
-                            : (notStarted ? Colors.red : Colors.orange))),
+                            : (isInProgress ? Colors.orange : Colors.red))),
               ),
-              if (isPast && wasInProgress)
-                FadeTransition(
-                  opacity: animation,
-                  child: ScaleTransition(
-                    scale: animation,
-                    child: Text('Completed',
-                        style: TextStyle(
-                            color: Colors.green, fontWeight: FontWeight.bold)),
-                  ),
-                ),
             ],
           ),
         ],
