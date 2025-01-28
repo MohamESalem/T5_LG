@@ -58,17 +58,17 @@ class _HoverAnimationStackState extends State<HoverAnimationStack>
   void initState() {
     super.initState();
     _rotationController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 2500),
       vsync: this,
     );
 
     _sizeController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 1800),
       vsync: this,
     );
 
     _starRotationController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
   }
@@ -128,7 +128,7 @@ class RotatingStar extends StatelessWidget {
   Widget build(BuildContext context) {
     final _animation = CurvedAnimation(
       parent: controller,
-      curve: Curves.linearToEaseOut,
+      curve: Curves.linear,
     );
 
     final _colorAnimation = ColorTween(
@@ -137,8 +137,8 @@ class RotatingStar extends StatelessWidget {
     ).animate(
       CurvedAnimation(
         parent: controller,
-        curve: Interval(0.0, 0.50, curve: Curves.easeInOutQuad),
-        reverseCurve: Curves.easeInOutQuad,
+        curve: Interval(0.0, 0.50, curve: Curves.linear),
+        reverseCurve: Curves.linear,
       ),
     );
 
@@ -180,7 +180,7 @@ class RotatingShape extends StatelessWidget {
     ).animate(
       CurvedAnimation(
         parent: rotationController,
-        curve: Curves.easeInOut,
+        curve: Curves.linear,
       ),
     );
 
